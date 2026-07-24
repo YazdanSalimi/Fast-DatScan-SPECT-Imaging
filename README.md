@@ -134,19 +134,6 @@ Slicer stays responsive, progress streams into the log, and *Cancel* stops the
 job immediately. GPU runs use bfloat16 autocast; CPU runs use all cores.
 
 
-## Repository layout
-
-```
-fastdatscan/            installable Python package
-    api.py              predict_image / predict_batch / building blocks
-    cli.py              the `fastdatscan` command
-    share.py            prepare checkpoints for distribution
-    _core.py            preprocessing + inference implementation
-FastDatScanSPECT/       3D Slicer module (add this folder to Slicer)
-Example.py              worked examples
-setup.py
-```
-
 ## Requirements
 
 Python ≥ 3.6 with `torch`, `monai`, `SimpleITK`, `nibabel`, `numpy`, `pandas`,
