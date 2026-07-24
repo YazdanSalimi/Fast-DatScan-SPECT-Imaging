@@ -1,4 +1,4 @@
-# Fast-SPECT-Imaging
+# Fast-DatScan-SPECT-Imaging
 ## Deep Learning pipeline for fast SPECT imaging.
 It contains the trained models for multiple tracers for brain SPECT and other applications.
 
@@ -26,7 +26,7 @@ Inference examples are provided below. Please check the SNMMI [abstract](https:/
 To install this repository, simply run:
 
 ```bash
-pip install git+https://github.com/YazdanSalimi/Fast-SPECT-Imaging.git
+pip install git+https://github.com/YazdanSalimi/Fast-DatScan-SPECT-Imaging.git
 ```
 
 ### Example
