@@ -1,13 +1,13 @@
-# Fast-DatScan-SPECT-Imaging
-## Deep Learning pipeline for fast SPECT imaging.
-It contains the trained models for multiple tracers for brain SPECT and other applications.
+# Fast DatScan SPECT Imaging with AI
+## Deep Learning pipeline for fast DatScan SPECT imaging.
+It contains the trained models for brain DatScan SPECT.
 
 ## Models
-Please download the trained models for each task and give the path on your machine where you saved the models to the inference function.
+Please download the trained models and give the path on your machine where you saved the models to the inference function. Models are available for diferrent levels of time reduction. 20%, 25%, and 50%. Please select a model closer to the acquisition time.
 
-- [Brain DaTscan I123](https://doi.org/10.26037/yareta:z37sdseqrra4ziesaoovdyomba) — these models are trained to convert a three minute I123-ioflupane brain image to a standard 15 minute scan.
+- [Brain DaTscan I123](https://doi.org/10.26037/yareta:z37sdseqrra4ziesaoovdyomba) — these models are trained to convert a fast (20, 25, and 50%) I123-ioflupane brain image to a standard 15 minute scan.
 
-Inference examples are provided below. Please check the SNMMI [abstract](https://jnm.snmjournals.org/content/65/supplement_2/241761.abstract) for more information. The other models dedicated to acquisition levels of four and eight minutes will be updated soon.
+Inference examples are provided below. Please check the SNMMI [abstract](https://jnm.snmjournals.org/content/65/supplement_2/241761.abstract) for more information. The full paper including the methodolgy and resutls will be available soon.
 
 ---
 
@@ -26,26 +26,41 @@ Inference examples are provided below. Please check the SNMMI [abstract](https:/
 To install this repository, simply run:
 
 ```bash
-pip install git+https://github.com/YazdanSalimi/Fast-DatScan-SPECT-Imaging.git
+pip install git+https://github.com/YazdanSalimi/Fast-SPECT-Imaging.git
 ```
 
 ### Example
 
 ```python
-from Fast_SPECT import DL_inference
+from fastdatscan import predict_image
 
-"""
-Easy to use!
-list_images is a list containing the address to your NIFTI input files on your machine.
-model_directory is where you saved the downloaded models on your machine.
-predict_directory is where you want to see your outputs
-"""
-list_ensembled_images = ensemble_regression_folds(
-    list_images,
-    model_directory,
-    predict_directory,
-    model_criteria="all",
+output = predict_image(
+    input_url="patient01.nii.gz",       # a fast-20% DaTscan SPECT image. 
+    model_directory="/data/models/BrainDaTscan-I123/20%/unet--light--2.46mm--96",
+    output_dir="/data/out",
 )
+print(output)
+```
+
+A whole folder:
+
+```python
+from fastdatscan import predict_batch
+
+predict_batch("/data/in/*.nii.gz", model_directory=MODEL_DIR,
+              output_dir="/data/out", device="cuda")
+```
+
+The preprocessing the models expect is applied automatically, and the prediction
+is resampled back onto the input grid so it overlays the original scan.
+See `Example.py` for options, progress callbacks and batch processing.
+
+### Command line
+
+```bash
+fastdatscan --list-models /data/models
+fastdatscan --input scan.nii.gz --model-dir MODEL_DIR --output-dir out
+fastdatscan --input "cases/*.nii.gz" --model-dir MODEL_DIR --output-dir out --folds 0,2,4
 ```
 
 ### Preprocessing
@@ -87,9 +102,10 @@ the ready-to-use **3D Slicer** module.
 
 ### Install
 
-1. Download / clone the `FastDatScanSPECT` folder.
-2. In Slicer: **Edit ▸ Application Settings ▸ Modules ▸ Additional module paths** → add that folder.
-3. Restart Slicer. The module appears under **Deep Learning ▸ Fast DaTscan SPECT**.
+1. Download the slicer module available in the repository and unzip it.
+2. Download / clone the trained models uisng this [link](https://drive.google.com/drive/folders/13AhUZCJ7lqmLxkswYxYXNMuw4iBXHnaA?usp=sharing).
+3. In Slicer: **Edit ▸ Application Settings ▸ Modules ▸ Additional module paths** → add that folder containing the unzip slicer module.
+4. Restart Slicer. The module appears under **Deep Learning ▸ Fast DaTscan SPECT**.
 
 ### Use
 
@@ -117,24 +133,19 @@ Slicer extension uses. The worker gets its own interpreter and CUDA context, so
 Slicer stays responsive, progress streams into the log, and *Cancel* stops the
 job immediately. GPU runs use bfloat16 autocast; CPU runs use all cores.
 
----
 
-## Sharing trained models
+## Repository layout
 
-Checkpoints saved during training can contain references to the private training
-package and to absolute paths from the training machine. Before distributing a
-`.pth`, prepare it:
-
-```python
-yazdan.DL.prepare_saved_pth_for_sharing(model_url)   # writes *-share.pth
 ```
-
-This strips the private package and bookkeeping, keeps only the fields needed for
-inference, and writes a clean `-share.pth`. Verify it on a machine where the
-training package is **not** importable — if it loads there, it will load for
-everyone.
-
----
+fastdatscan/            installable Python package
+    api.py              predict_image / predict_batch / building blocks
+    cli.py              the `fastdatscan` command
+    share.py            prepare checkpoints for distribution
+    _core.py            preprocessing + inference implementation
+FastDatScanSPECT/       3D Slicer module (add this folder to Slicer)
+Example.py              worked examples
+setup.py
+```
 
 ## Requirements
 
