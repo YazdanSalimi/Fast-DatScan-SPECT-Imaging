@@ -131,23 +131,5 @@ def example_preprocessing_only():
     print("normalized:", normalized)
     print("cropped   :", cropped)
     print("crop box  :", crop_box["crop_sizes"])
-
-
-# --------------------------------------------------------------------------- #
-# 6. Preparing a trained checkpoint for sharing
-# --------------------------------------------------------------------------- #
-def example_prepare_for_sharing():
-    from fastdatscan.share import prepare_for_sharing, prepare_tree
-
-    # one checkpoint -> BestTrainMetricModel-share.pth next to it
-    prepare_for_sharing(os.path.join(MODEL_DIR, "fold--0",
-                                     "BestTrainMetricModel-Full.pth"))
-
-    # or every model under a tree
-    prepare_tree(MODELS_ROOT)
-
-    # then VERIFY on a machine where the training package is not importable.
-
-
 if __name__ == "__main__":
     example_single_image()
