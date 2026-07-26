@@ -26,7 +26,7 @@ Inference examples are provided below. Please check the SNMMI [abstract](https:/
 To install this repository, simply run:
 
 ```bash
-pip install git+https://github.com/YazdanSalimi/Fast-SPECT-Imaging.git
+pip install git+https://github.com/YazdanSalimi/Fast-DatScan-SPECT-Imaging.git
 ```
 
 ### Example
